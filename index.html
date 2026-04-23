@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>atte: tu noble y fiel cabellero siempre tan enamorado y emoshionado por ti HEHE(≧▽≦)❤️‍🔥✨️</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      background: linear-gradient(145deg, #ffb7c5 0%, #ff8da1 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', 'Quicksand', system-ui, -apple-system, 'Comic Neue', cursive, sans-serif;
+      padding: 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Encabezado tierno */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      z-index: 10;
+      position: relative;
+    }
+
+    h1 {
+      font-size: clamp(1.2rem, 6vw, 2rem);
+      background: rgba(255, 245, 245, 0.75);
+      backdrop-filter: blur(8px);
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      border-radius: 120px;
+      color: #b13e5c;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      border: 1px solid rgba(255,255,200,0.6);
+    }
+
+    /* carrusel flotante */
+    .carousel {
+      position: relative;
+      width: 90vw;
+      max-width: 800px;
+      height: 65vh;
+      max-height: 550px;
+      background: #ffe4ed;
+      border-radius: 48px;
+      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.25), 0 0 0 10px rgba(255, 220, 230, 0.5);
+      overflow: hidden;
+      margin: 1rem auto;
+      z-index: 12;
+      cursor: grab;
+      transition: all 0.2s;
+    }
+
+    .carousel:active {
+      cursor: grabbing;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 40px;
+      transition: transform 0.3s ease;
+    }
+
+    .slide:hover img {
+      transform: scale(1.02);
+    }
+
+    /* texto romántico sobre la imagen */
+    .overlay {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      background: linear-gradient(90deg, rgba(0,0,0,0.5) 0%, rgba(255,120,150,0.7) 100%);
+      backdrop-filter: blur(5px);
+      color: white;
+      text-align: center;
+      padding: 12px 16px;
+      font-size: clamp(0.85rem, 4vw, 1.2rem);
+      font-weight: bold;
+      border-radius: 60px;
+      width: 90%;
+      margin: 0 auto 15px auto;
+      left: 5%;
+      right: auto;
+      font-family: monospace;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 2px black;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* botón music */
+    .music-btn {
+      background: #ff5777;
+      border: none;
+      padding: 12px 28px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      border-radius: 60px;
+      color: white;
+      font-family: inherit;
+      margin: 25px 0 20px;
+      cursor: pointer;
+      box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+      backdrop-filter: blur(4px);
+      transition: all 0.25s;
+      z-index: 20;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .music-btn:hover {
+      background: #ff3366;
+      transform: scale(1.03);
+      box-shadow: 0 18px 25px rgba(0,0,0,0.25);
+    }
+
+    /* canvas particulas */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* indicadores de slide manuales (burbujitas) */
+    .dots-container {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      margin: 15px 0 20px;
+      z-index: 15;
+      position: relative;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      background: rgba(255, 220, 220, 0.7);
+      border-radius: 50%;
+      transition: 0.2s;
+      cursor: pointer;
+      box-shadow: 0 0 4px hotpink;
+    }
+
+    .dot.active-dot {
+      background: #ff3366;
+      transform: scale(1.4);
+      box-shadow: 0 0 12px #ff99bb;
+    }
+
+    @media (max-width: 650px) {
+      .carousel {
+        height: 55vh;
+      }
+      .overlay {
+        font-size: 0.75rem;
+        bottom: 10px;
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>✨💗 Desliza ← → mi niñita helmoshita ✨💗<br> Felissh 13th Anniversary (≧▽≦)💗🌸✨️</h1>
+</header>
+
+<div class="carousel" id="carousel">
+  <!-- Slide 1 -->
+  <div class="slide active" data-index="0">
+    <img src="assets/XD1.webp" alt="XD1" loading="lazy">
+    <div class="overlay">I love you very much forever my gorgeous girl🥹💗🌸</div>
+  </div>
+
+  <!-- Slide 2 -->
+  <div class="slide" data-index="1">
+    <img src="assets/XD2.webp" alt="XD2" loading="lazy">
+    <div class="overlay">tú eres mi vidita entera pol siempre <3💗🌟</div>
+  </div>
+
+  <!-- Slide 3 -->
+  <div class="slide" data-index="2">
+    <img src="assets/XD3.webp" alt="XD3" loading="lazy">
+    <div class="overlay">TE AMOO mushísimo mi niñita helmoshita de todito mi korashon HEHE(≧▽≦)💗💞</div>
+  </div>
+
+  <!-- Slide 4 -->
+  <div class="slide" data-index="3">
+    <img src="assets/XD4.webp" alt="XD4" loading="lazy">
+    <div class="overlay">Siempre vas a embelleshel mi vidita entera kon tu precioshísima perfección<3💗🩷✨️</div>
+  </div>
+
+  <!-- Slide 5 -->
+  <div class="slide" data-index="4">
+    <img src="assets/XD5.webp" alt="XD5" loading="lazy">
+    <div class="overlay">Bem juntitos pol siempre mi my gud girl of my life HEHE;)💗💕</div>
+  </div>
+
+  <!-- Slide 6 -->
+  <div class="slide" data-index="5">
+    <img src="assets/XD6.webp" alt="XD6" loading="lazy">
+    <div class="overlay">Siempre te amaré infinitash eternidades!! mi bellíshima bebita siempre perfecta de mi korashon🥹💗🌸✨️</div>
+  </div>
+</div>
+
+<!-- Indicadores (6 puntitos) -->
+<div class="dots-container" id="dotsContainer"></div>
+
+<button class="music-btn" id="musicBtn">🎵♪ Reproducir música 🎀</button>
+
+<audio id="backgroundMusic" loop>
+  <source src="assets/musica.mp3" type="audio/mpeg">
+</audio>
+
+<canvas id="particles"></canvas>
+
+<script>
+  (function(){
+    // -------------------- CARRUSEL CON 6 IMAGENES --------------------
+    const carousel = document.getElementById('carousel');
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;  // = 6
+    let currentIndex = 0;
+    let startX = 0;
+    let isDragging = false;
+    let dragThreshold = 40;
+
+    // Crear dots dinámicamente según totalSlides
+    const dotsContainer = document.getElementById('dotsContainer');
+    function createDots() {
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        if (i === currentIndex) dot.classList.add('active-dot');
+        dot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          goToSlide(i);
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, idx) => {
+        if (idx === currentIndex) dot.classList.add('active-dot');
+        else dot.classList.remove('active-dot');
+      });
+    }
+
+    function goToSlide(index) {
+      if (index < 0) index = totalSlides - 1;
+      if (index >= totalSlides) index = 0;
+      slides[currentIndex].classList.remove('active');
+      currentIndex = index;
+      slides[currentIndex].classList.add('active');
+      updateDots();
+    }
+
+    function nextSlide() {
+      goToSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+      goToSlide(currentIndex - 1);
+    }
+
+    // Detectar deslizar táctil y ratón
+    function handleTouchStart(e) {
+      startX = e.touches ? e.touches[0].clientX : e.clientX;
+      isDragging = true;
+      carousel.style.cursor = 'grabbing';
+    }
+
+    function handleTouchMove(e) {
+      if (!isDragging) return;
+      let currentX = e.touches ? e.touches[0].clientX : e.clientX;
+      let diff = currentX - startX;
+      if (Math.abs(diff) > dragThreshold) {
+        if (diff > 0) {
+          prevSlide();
+        } else {
+          nextSlide();
+        }
+        isDragging = false;
+        carousel.style.cursor = 'grab';
+      }
+    }
+
+    function handleTouchEnd() {
+      isDragging = false;
+      carousel.style.cursor = 'grab';
+    }
+
+    carousel.addEventListener('mousedown', handleTouchStart);
+    carousel.addEventListener('mousemove', handleTouchMove);
+    carousel.addEventListener('mouseup', handleTouchEnd);
+    carousel.addEventListener('touchstart', handleTouchStart);
+    carousel.addEventListener('touchmove', handleTouchMove);
+    carousel.addEventListener('touchend', handleTouchEnd);
+    carousel.style.cursor = 'grab';
+
+    // teclado opcional para pc
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevSlide();
+      if (e.key === 'ArrowRight') nextSlide();
+    });
+
+    // inicializar dots
+    createDots();
+
+    // -------------------- MÚSICA --------------------
+    const musicBtn = document.getElementById('musicBtn');
+    const bgMusic = document.getElementById('backgroundMusic');
+    let isPlaying = false;
+
+    musicBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        bgMusic.pause();
+        musicBtn.innerHTML = '🎵♪ Reproducir música 🎀';
+        musicBtn.style.background = '#ff5777';
+        isPlaying = false;
+      } else {
+        bgMusic.play().catch(e => console.log("autoplay bloqueado, pero el usuario hizo click"));
+        musicBtn.innerHTML = '💖🌸 Pausar música 🌸💖';
+        musicBtn.style.background = '#b13e5c';
+        isPlaying = true;
+      }
+    });
+
+    // Si la música termina, reiniciamos
+    bgMusic.addEventListener('ended', () => {
+      if(isPlaying){
+        bgMusic.play();
+      }
+    });
+
+    // -------------------- PARTÍCULAS DE AMOR (CORAZONES Y BRILLOS) --------------------
+    const canvas = document.getElementById('particles');
+    let ctx = canvas.getContext('2d');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let particlesArray = [];
+
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+    });
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = Math.random() * 5 + 2;
+        this.speedX = (Math.random() - 0.5) * 0.6;
+        this.speedY = (Math.random() - 0.5) * 0.6 + 0.3;
+        this.color = `hsl(${Math.random() * 20 + 340}, 80%, 70%)`;
+        this.opacity = Math.random() * 0.6 + 0.3;
+        this.alpha = this.opacity;
+        this.shape = Math.random() > 0.7 ? 'heart' : 'circle';
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x > width + 20) this.x = -20;
+        if (this.x < -20) this.x = width + 20;
+        if (this.y > height + 20) this.y = -20;
+        if (this.y < -20) this.y = height + 20;
+      }
+      drawHeart(ctx, x, y, size) {
+        ctx.save();
+        ctx.beginPath();
+        const topCurveHeight = size * 0.3;
+        ctx.moveTo(x, y + topCurveHeight);
+        ctx.bezierCurveTo(x, y, x - size / 2, y, x - size / 2, y + topCurveHeight);
+        ctx.bezierCurveTo(x - size / 2, y + (size * 0.5), x, y + size, x, y + size);
+        ctx.bezierCurveTo(x, y + size, x + size / 2, y + (size * 0.5), x + size / 2, y + topCurveHeight);
+        ctx.bezierCurveTo(x + size / 2, y, x, y, x, y + topCurveHeight);
+        ctx.closePath();
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = "#ff99bb";
+        ctx.fill();
+        ctx.restore();
+      }
+      draw(ctx) {
+        ctx.globalAlpha = this.opacity;
+        if (this.shape === 'heart') {
+          this.drawHeart(ctx, this.x, this.y, this.size * 1.2);
+        } else {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.shadowBlur = 4;
+          ctx.shadowColor = "#ffb7c5";
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    function initParticles() {
+      particlesArray = [];
+      let numberOfParticles = Math.min(130, Math.floor(width * height / 7000));
+      for (let i = 0; i < numberOfParticles; i++) {
+        particlesArray.push(new Particle());
+      }
+    }
+    function animateParticles() {
+      ctx.clearRect(0, 0, width, height);
+      for (let i = 0; i < particlesArray.length; i++) {
+        particlesArray[i].update();
+        particlesArray[i].draw(ctx);
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    initParticles();
+    animateParticles();
+
+    window.addEventListener('resize', () => {
+      initParticles();
+    });
+
+    // Efecto: corazoncitos extra flotando desde el carrusel
+    setInterval(() => {
+      if (!carousel) return;
+      const rect = carousel.getBoundingClientRect();
+      if (rect.width > 0) {
+        for(let i=0;i<3;i++){
+          let extraHeart = new Particle();
+          extraHeart.x = rect.left + Math.random() * rect.width;
+          extraHeart.y = rect.top + rect.height - 10;
+          extraHeart.speedX = (Math.random() - 0.5) * 0.8;
+          extraHeart.speedY = -Math.random() * 1.5 - 0.5;
+          extraHeart.size = Math.random() * 5 + 3;
+          extraHeart.shape = 'heart';
+          extraHeart.opacity = 0.8;
+          particlesArray.push(extraHeart);
+          if(particlesArray.length > 300) particlesArray.splice(0, 50);
+        }
+      }
+    }, 1800);
+  })();
+</script>
+</body>
+</html>
